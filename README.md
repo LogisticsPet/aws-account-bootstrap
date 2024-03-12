@@ -7,7 +7,7 @@ This repository contains CloudFormation templates for setting up authentication 
 The following CloudFormation templates are available:
 
 1. `templates/terraform-cloud.yaml`: This template sets up an OIDC provider, IAM Role and IAM Policy with Required policy set of permissions for Terraform Cloud authentication.
-2. `github-oidc-provider.yaml`: This template sets up an OIDC provider, IAM Role and IAM Policy with Required policy set of permissions for GitHub authentication.
+2. `templates/github.yaml`: This template sets up an OIDC provider, IAM Role and IAM Policy with Required policy set of permissions for GitHub authentication.
 
 ## Usage
 
