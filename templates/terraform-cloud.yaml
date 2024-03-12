@@ -127,8 +127,6 @@ Resources:
               Federated: !Ref TerraformCloudOIDCProvider
   TerraformCloudOIDCProvider:
     Type: "AWS::IAM::OIDCProvider"
-    UpdateReplacePolicy: "Retain"
-    DeletionPolicy: "Retain"
     Properties:
       ClientIdList:
         - "aws.workload.identity"
