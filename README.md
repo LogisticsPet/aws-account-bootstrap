@@ -15,7 +15,7 @@ Ensure that you review and customize the templates according to your specific re
 
 To use these templates, follow these steps:
 
-1. Create and configure Cloud Formation stacks with Git Sync([AWS docs](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/git-sync.html))
+1. Create and configure Cloud Formation stacks with Git Sync([AWS docs](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/git-sync.html)). Use [policy](./iam/policy.json)
 2. Update Policy with permissions, when new resources has to be created.
 
 
