@@ -27,7 +27,7 @@ Resources:
               - 'iam:DeletePolicy'
               - 'iam:CreatePolicy'
               - 'iam:TagPolicy'
-            Resource: !Sub "arn:aws:iam::${AWS::AccountId}:policy/*"
+            Resource: !Sub "arn:aws:iam:${AWSRegion}:${AWS::AccountId}:policy/*"
   GitHubActionsOIDCProviderRole:
     Type: "AWS::IAM::Role"
     Properties:
