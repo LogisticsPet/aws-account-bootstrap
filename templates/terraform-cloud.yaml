@@ -17,95 +17,14 @@ Resources:
       PolicyName: ECRPublicPolicy
       Roles:
         - !Ref TerraformCloudOIDCProviderRole
-      PolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Action:
-              - 'ecr-public:CreateRepository'
-              - 'ecr-public:DeleteRepository'
-              - 'ecr-public:DescribeRepositories'
-              - 'ecr-public:TagResource'
-              - 'ecr-public:GetRepositoryCatalogData'
-              - 'ecr-public:GetRepositoryPolicy'
-              - 'ecr-public:SetRepositoryPolicy'
-              - 'ecr-public:DeleteRepositoryPolicy'
-            Resource: !Sub "arn:aws:ecr-public::${AWS::AccountId}:repository/*"
+      PolicyDocument: !Rain::Include ecr-policy.json
   TerraformStatePolicy:
     Type: "AWS::IAM::Policy"
     Properties:
       PolicyName: TerraformStatePolicy
       Roles:
         - !Ref TerraformCloudOIDCProviderRole
-      PolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Action:
-              - 'dynamodb:CreateTable'
-              - 'dynamodb:DescribeTable'
-              - 'dynamodb:DescribeContinuousBackups'
-              - 'dynamodb:DescribeTimeToLive'
-              - 'dynamodb:ListTagsOfResource'
-              - 'dynamodb:DeleteTable'
-              - 'dynamodb:TagResource'
-              - 'dynamodb:UpdateContinuousBackups'
-            Resource: !Sub "arn:aws:dynamodb:${AWSRegion}:${AWS::AccountId}:table/*"
-          - Effect: Allow
-            Action:
-              - 'kms:ListAliases'
-              - 'kms:TagResource'
-              - 'kms:CreateKey'
-              - 'kms:EnableKeyRotation'
-              - 'kms:DescribeKey'
-              - 'kms:GetKeyPolicy'
-              - 'kms:GetKeyRotationStatus'
-              - 'kms:ListResourceTags'
-              - 'kms:ScheduleKeyDeletion'
-              - 'kms:CreateAlias'
-              - 'kms:DeleteAlias'
-            Resource: "*"
-          - Effect: Allow
-            Action:
-              - 's3:CreateBucket'
-              - 's3:PutBucketPolicy'
-              - 's3:ListBucket'
-              - 's3:GetBucketPolicy'
-              - 's3:GetBucketAcl'
-              - 's3:GetBucketCors'
-              - 's3:GetBucketWebsite'
-              - 's3:GetBucketVersioning'
-              - 's3:GetAccelerateConfiguration'
-              - 's3:GetBucketRequestPayment'
-              - 's3:GetBucketLogging'
-              - 's3:GetLifecycleConfiguration'
-              - 's3:GetReplicationConfiguration'
-              - 's3:GetEncryptionConfiguration'
-              - 's3:GetBucketObjectLockConfiguration'
-              - 's3:GetBucketTagging'
-              - 's3:GetBucketPublicAccessBlock'
-              - 's3:PutEncryptionConfiguration'
-              - 's3:PutBucketVersioning'
-              - 's3:DeleteBucketPolicy'
-              - 's3:PutLifecycleConfiguration'
-              - 's3:PutBucketPublicAccessBlock'
-              - 's3:DeleteBucket'
-              - 's3:PutBucketTagging'
-              - 's3:PutBucketAcl'
-              - 's3:PutBucketOwnershipControls'
-              - 's3:GetBucketOwnershipControls'
-            Resource: "arn:aws:s3:::*"
-          - Effect: Allow
-            Action:
-              - 'iam:GetPolicy'
-              - 'iam:GetPolicyVersion'
-              - 'iam:ListPolicyVersions'
-              - 'iam:CreatePolicyVersion'
-              - 'iam:DeletePolicyVersion'
-              - 'iam:DeletePolicy'
-              - 'iam:CreatePolicy'
-              - 'iam:TagPolicy'
-            Resource: !Sub "arn:aws:iam::${AWS::AccountId}:policy/*"
+      PolicyDocument: !Rain::Include terraform-state-policy.json
   TerraformCloudOIDCProviderRole:
     Type: "AWS::IAM::Role"
     Properties:

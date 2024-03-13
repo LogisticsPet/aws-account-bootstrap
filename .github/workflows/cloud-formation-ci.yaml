@@ -1,0 +1,70 @@
+name: Cloud Formation CI
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  cloud-formation-ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.API_TOKEN_GITHUB }} # use custom token to trigger CI on commit
+
+      - name: Setup Cloud Formation "Rain" util
+        run: |
+          gh release download --repo aws-cloudformation/rain --pattern "*_linux-amd64.zip" --output "rain.zip"
+          unzip -j "rain.zip" "*/rain"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Cloud Formation Linter with Latest Version
+        uses: scottbrenner/cfn-lint-action@v2
+
+      - name: Setup python
+        uses: actions/setup-python@v5
+
+      - name: Run templating
+        run: python3 ./transformation/transform.py -i ./iam -o ./templates
+
+      - name: Create output files
+        run: mkdir -p ./generated && touch ./generated/terraform-cloud.yaml && touch ./generated/github.yaml
+
+      - name: Build Terraform Cloud template
+        run: ./rain package templates/terraform-cloud.yaml | tee ./generated/terraform-cloud.yaml
+
+      - name: Build Github Actions template
+        run: ./rain package templates/github.yaml | tee ./generated/github.yaml
+
+      - name: Upload Github Actions Template
+        uses: actions/upload-artifact@v4
+        with:
+          path: generated/terraform-cloud.yaml
+          name: terraform-cloud-template.yaml
+            
+      - name: Upload Terraform Cloud Template
+        uses: actions/upload-artifact@v4
+        with:
+          path: generated/github.yaml
+          name: github-actions-template.yaml
+
+      - name: Run Linter.
+        run: cfn-lint generated/*.yaml
+
+      - name: Commit rendered changes
+        uses: EndBug/add-and-commit@v9.1.4
+        with:
+          author_name: iam-ci-bot
+          author_email: iam-ci-bot@logisticsonline.uk
+          message: 'Push rendered templates'
+          add: 'generated/*'
+          commit: --signoff
+          tag_push: '--force'

@@ -1,0 +1,65 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: Cloud Formation template to configure GitHub Actions Authentication. OIDC provider, IAM role that can be supplied to GitHubAction to authenticate.
+
+Parameters:
+  GitHubOrg:
+    Description: Github Organization.
+    Type: String
+
+  StateBucketName:
+    Description: Name of S3 bucket for terraform state.
+    Type: String
+
+  StateLockTableName:
+    Description: Name of Dynamo DB Table  for terraform state locking.
+    Type: String
+
+Resources:
+  GitHubActionsOIDCProviderRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                token.actions.githubusercontent.com:aud: sts.amazonaws.com
+              StringLike:
+                token.actions.githubusercontent.com:sub: !Sub repo:${GitHubOrg}/*:ref:refs/heads/*
+            Effect: Allow
+            Principal:
+              Federated: !Ref GitHubOIDCProvider
+        Version: "2012-10-17"
+      Description: OIDC Provider role for GitHub Actions.
+      MaxSessionDuration: 3600
+      Path: /
+      RoleName: GitHubActionsOIDCProviderRole
+
+  GitHubOIDCProvider:
+    Type: AWS::IAM::OIDCProvider
+    Properties:
+      ClientIdList:
+        - sts.amazonaws.com
+      Tags: []
+      ThumbprintList:
+        - 1b511abead59c6ce207077c0bf0e0043b1382612
+      Url: https://token.actions.githubusercontent.com
+
+  StatePolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Fn::Transform:
+          Name: AWS::Include
+          Parameters:
+            Location: iam/github/state/iam-policy.json
+      PolicyName: StatePolicy
+      Roles:
+        - !Ref GitHubActionsOIDCProviderRole
+
+Outputs:
+  GitHubActionsOIDCProviderRole:
+    Description: ARN of GitHubActions IAM Role.
+    Value: !GetAtt GitHubActionsOIDCProviderRole.Arn
+
