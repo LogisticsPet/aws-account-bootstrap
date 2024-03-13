@@ -1,4 +1,4 @@
-template-file-path: ./templates/terraform-cloud.yaml
+template-file-path: ./generated/terraform-cloud.yaml
 
 parameters:
   AWSRegion: us-east-2

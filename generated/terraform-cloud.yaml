@@ -1,0 +1,151 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: Cloud Formation template to configure Terraform Cloud Authentication. OIDC provider, IAM role that can be supplied to TF Cloud to authenticate.
+
+Parameters:
+  AWSRegion:
+    Description: AWS Region.
+    Type: String
+
+  TFCloudOrg:
+    Description: Terraform Cloud Organization name.
+    Type: String
+
+  TFCloudProject:
+    Description: Terraform Cloud Project name.
+    Type: String
+
+Resources:
+  PublicECRPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - ecr-public:CreateRepository
+              - ecr-public:DeleteRepository
+              - ecr-public:DescribeRepositories
+              - ecr-public:TagResource
+              - ecr-public:GetRepositoryCatalogData
+              - ecr-public:GetRepositoryPolicy
+              - ecr-public:SetRepositoryPolicy
+              - ecr-public:DeleteRepositoryPolicy
+              - ecr-public:ListTagsForResource
+            Effect: Allow
+            Resource: !Sub arn:aws:ecr:*:${AWS::AccountId}:repository/*
+        Version: "2012-10-17"
+      PolicyName: ECRPublicPolicy
+      Roles:
+        - !Ref TerraformCloudOIDCProviderRole
+
+  TerraformCloudOIDCProvider:
+    Type: AWS::IAM::OIDCProvider
+    Properties:
+      ClientIdList:
+        - aws.workload.identity
+      Tags: []
+      ThumbprintList:
+        - 9e99a48a9960b14926bb7f3b02e22da2b0ab7280
+      Url: https://app.terraform.io
+
+  TerraformCloudOIDCProviderRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                app.terraform.io:aud: aws.workload.identity
+              StringLike:
+                app.terraform.io:sub: !Sub organization:${TFCloudOrg}:project:${TFCloudProject}:workspace:*:run_phase:*
+            Effect: Allow
+            Principal:
+              Federated: !Ref TerraformCloudOIDCProvider
+        Version: "2012-10-17"
+      Description: OIDC Provider role for Terraform Cloud.
+      MaxSessionDuration: 3600
+      Path: /
+      RoleName: TerraformCloudOIDCProviderRole
+
+  TerraformStatePolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - dynamodb:CreateTable
+              - dynamodb:DescribeTable
+              - dynamodb:DescribeContinuousBackups
+              - dynamodb:DescribeTimeToLive
+              - dynamodb:ListTagsOfResource
+              - dynamodb:DeleteTable
+              - dynamodb:TagResource
+              - dynamodb:UpdateContinuousBackups
+            Effect: Allow
+            Resource: !Sub arn:aws:dynamodb:*:${AWS::AccountId}:table/*
+          - Action:
+              - kms:ListAliases
+              - kms:TagResource
+              - kms:CreateKey
+              - kms:EnableKeyRotation
+              - kms:DescribeKey
+              - kms:GetKeyPolicy
+              - kms:GetKeyRotationStatus
+              - kms:ListResourceTags
+              - kms:ScheduleKeyDeletion
+              - kms:CreateAlias
+              - kms:DeleteAlias
+            Effect: Allow
+            Resource: '*'
+          - Action:
+              - s3:CreateBucket
+              - s3:PutBucketPolicy
+              - s3:ListBucket
+              - s3:GetBucketPolicy
+              - s3:GetBucketAcl
+              - s3:GetBucketCors
+              - s3:GetBucketWebsite
+              - s3:GetBucketVersioning
+              - s3:GetAccelerateConfiguration
+              - s3:GetBucketRequestPayment
+              - s3:GetBucketLogging
+              - s3:GetLifecycleConfiguration
+              - s3:GetReplicationConfiguration
+              - s3:GetEncryptionConfiguration
+              - s3:GetBucketObjectLockConfiguration
+              - s3:GetBucketTagging
+              - s3:GetBucketPublicAccessBlock
+              - s3:PutEncryptionConfiguration
+              - s3:PutBucketVersioning
+              - s3:DeleteBucketPolicy
+              - s3:PutLifecycleConfiguration
+              - s3:PutBucketPublicAccessBlock
+              - s3:DeleteBucket
+              - s3:PutBucketTagging
+              - s3:PutBucketAcl
+              - s3:PutBucketOwnershipControls
+              - s3:GetBucketOwnershipControls
+            Effect: Allow
+            Resource: arn:aws:s3:::*
+          - Action:
+              - iam:GetPolicy
+              - iam:GetPolicyVersion
+              - iam:ListPolicyVersions
+              - iam:CreatePolicyVersion
+              - iam:DeletePolicyVersion
+              - iam:DeletePolicy
+              - iam:CreatePolicy
+              - iam:TagPolicy
+            Effect: Allow
+            Resource: !Sub arn:aws:iam::${AWS::AccountId}:policy/*
+        Version: "2012-10-17"
+      PolicyName: TerraformStatePolicy
+      Roles:
+        - !Ref TerraformCloudOIDCProviderRole
+
+Outputs:
+  TerraformCloudOIDCProviderRole:
+    Description: ARN of Terraform Cloud IAM Role.
+    Value: !GetAtt TerraformCloudOIDCProviderRole.Arn
+

@@ -1,0 +1,5 @@
+templates:
+  - templates/good/**/*.yaml
+ignore_checks:
+- E2507
+- W2001
