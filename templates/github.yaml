@@ -1,0 +1,65 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Cloud Formation template to configure GitHub Actions Authentication. OIDC provider, IAM role that can be supplied to GitHubAction to authenticate.
+Parameters:
+  GitHubOrg:
+    Type: String
+    Description: Github Organization
+  AWSRegion:
+    Type: String
+    Description: AWS Region.
+Resources:
+  TerraformStatePolicy:
+    Type: "AWS::IAM::Policy"
+    Properties:
+      PolicyName: TerraformStatePolicy
+      Roles:
+        - !Ref GitHubActionsOIDCProviderRole
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'iam:GetPolicy'
+              - 'iam:GetPolicyVersion'
+              - 'iam:ListPolicyVersions'
+              - 'iam:CreatePolicyVersion'
+              - 'iam:DeletePolicyVersion'
+              - 'iam:DeletePolicy'
+              - 'iam:CreatePolicy'
+              - 'iam:TagPolicy'
+            Resource: !Sub "arn:aws:iam::${AWS::AccountId}:policy/*"
+  GitHubActionsOIDCProviderRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      Path: "/"
+      MaxSessionDuration: 3600
+      RoleName: "GitHubActionsOIDCProviderRole"
+      Description: "OIDC Provider role for GitHub Actions."
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Condition:
+              StringEquals:
+                "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
+              StringLike:
+                "token.actions.githubusercontent.com:sub": !Sub "repo:${GitHubOrg}/*:ref:refs/heads/*"
+            Action: "sts:AssumeRoleWithWebIdentity"
+            Effect: "Allow"
+            Principal:
+              Federated: !Ref GitHubOIDCProvider
+  GitHubOIDCProvider:
+    Type: "AWS::IAM::OIDCProvider"
+    Properties:
+      ClientIdList:
+        - "sts.amazonaws.com"
+      ThumbprintList:
+        - "1b511abead59c6ce207077c0bf0e0043b1382612"
+      Url: "https://token.actions.githubusercontent.com"
+      Tags: []
+
+
+Outputs:
+  TerraformCloudOIDCProviderRole:
+    Description: ARN of Terraform Cloud IAM Role.
+    Value: !GetAtt GitHubActionsOIDCProviderRole.Arn
+
