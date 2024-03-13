@@ -1,5 +1,3 @@
-template-file-path: ./templates/github.yaml
-
-parameters:
-  AWSRegion: us-east-2
-  GitHubOrg: MikalaiYatsyna
+template-file-path: templates/github.yaml
+parameters: {}
+tags: {}
