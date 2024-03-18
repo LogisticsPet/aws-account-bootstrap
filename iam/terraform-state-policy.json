@@ -12,7 +12,7 @@
         "dynamodb:TagResource",
         "dynamodb:UpdateContinuousBackups"
       ],
-      "Resource": "arn:aws:dynamodb:*:{{AWS::AccountId}}:table/*",
+      "Resource": "arn:aws:dynamodb:*:${AWS::AccountId}:table/*",
       "Effect": "Allow"
     },
     {
@@ -76,7 +76,7 @@
         "iam:CreatePolicy",
         "iam:TagPolicy"
       ],
-      "Resource": "arn:aws:iam::{{AWS::AccountId}}:policy/*",
+      "Resource": "arn:aws:iam::${AWS::AccountId}:policy/*",
       "Effect": "Allow"
     }
   ]
