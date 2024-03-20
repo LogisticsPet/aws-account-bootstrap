@@ -23,7 +23,7 @@ Resources:
     Properties:
       PolicyName: VPCPolicy
       Roles:
-        !Ref GitHubActionsOIDCProviderRole
+        - !Ref GitHubActionsOIDCProviderRole
       PolicyDocument: !Rain::Include vpc-policy.json
   GitHubActionsOIDCProviderRole:
     Type: "AWS::IAM::Role"
