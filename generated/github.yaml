@@ -50,10 +50,29 @@ Resources:
     Type: AWS::IAM::Policy
     Properties:
       PolicyDocument:
-        Fn::Transform:
-          Name: AWS::Include
-          Parameters:
-            Location: iam/github/state/iam-policy.json
+        Statement:
+          - Action:
+              - s3:GetObject
+              - s3:ListBucket
+              - s3:PutObject
+              - s3:GetBucketVersioning
+              - s3:GetEncryptionConfiguration
+              - s3:GetBucketPolicy
+              - s3:GetBucketPublicAccessBlock
+              - s3:PutBucketPolicy
+            Effect: Allow
+            Resource:
+              - !Sub arn:aws:s3:::${StateBucketName}
+              - !Sub arn:aws:s3:::${StateBucketName}/*
+          - Action:
+              - dynamodb:PutItem
+              - dynamodb:GetItem
+              - dynamodb:DescribeTable
+              - dynamodb:DeleteItem
+              - dynamodb:CreateTable
+            Effect: Allow
+            Resource: !Sub arn:aws:dynamodb:*:*:table/${StateLockTableName}
+        Version: "2012-10-17"
       PolicyName: StatePolicy
       Roles:
         - !Ref GitHubActionsOIDCProviderRole
