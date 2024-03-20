@@ -1,0 +1,62 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Cloud Formation template to configure GitHub Actions Authentication. OIDC provider, IAM role that can be supplied to GitHubAction to authenticate.
+Parameters:
+  GitHubOrg:
+    Type: String
+    Description: Github Organization.
+  StateBucketName:
+    Type: String
+    Description: Name of S3 bucket for terraform state.
+  StateLockTableName:
+    Type: String
+    Description: Name of Dynamo DB Table  for terraform state locking.
+Resources:
+  StatePolicy:
+    Type: "AWS::IAM::Policy"
+    Properties:
+      PolicyName: StatePolicy
+      Roles:
+        - !Ref GitHubActionsOIDCProviderRole
+      PolicyDocument: !Rain::Include state-operations-policy.json
+  VpcPolicy:
+    Type: "AWS::IAM::Policy"
+    Properties:
+      PolicyName: VPCPolicy
+      Roles:
+        - !Ref GitHubActionsOIDCProviderRole
+      PolicyDocument: !Rain::Include vpc-policy.json
+  GitHubActionsOIDCProviderRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      Path: "/"
+      MaxSessionDuration: 3600
+      RoleName: "GitHubActionsOIDCProviderRole"
+      Description: "OIDC Provider role for GitHub Actions."
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Condition:
+              StringEquals:
+                "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
+              StringLike:
+                "token.actions.githubusercontent.com:sub": !Sub "repo:${GitHubOrg}/*:ref:refs/heads/*"
+            Action: "sts:AssumeRoleWithWebIdentity"
+            Effect: "Allow"
+            Principal:
+              Federated: !Ref GitHubOIDCProvider
+  GitHubOIDCProvider:
+    Type: "AWS::IAM::OIDCProvider"
+    Properties:
+      ClientIdList:
+        - "sts.amazonaws.com"
+      ThumbprintList:
+        - "1b511abead59c6ce207077c0bf0e0043b1382612"
+      Url: "https://token.actions.githubusercontent.com"
+      Tags: []
+
+
+Outputs:
+  GitHubActionsOIDCProviderRole:
+    Description: ARN of GitHubActions IAM Role.
+    Value: !GetAtt GitHubActionsOIDCProviderRole.Arn
+

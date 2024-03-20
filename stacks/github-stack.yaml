@@ -1,0 +1,6 @@
+template-file-path: ./generated/github.yaml
+
+parameters:
+  GitHubOrg: MikalaiYatsyna
+  StateBucketName: mikalai-yatsyna-tf-state
+  StateLockTableName: tf_state_lock
