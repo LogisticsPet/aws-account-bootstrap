@@ -77,6 +77,127 @@ Resources:
       Roles:
         - !Ref GitHubActionsOIDCProviderRole
 
+  VpcPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - sts:GetCallerIdentity
+              - ec2:DescribeAvailabilityZones
+              - ec2:DescribeVpcs
+              - ec2:DescribeNetworkAcls
+              - ec2:DescribeRouteTables
+              - ec2:DescribeSecurityGroups
+              - ec2:DescribeSubnets
+              - ec2:DescribeInternetGateways
+              - ec2:DescribeSecurityGroupRules
+              - logs:DescribeLogGroups
+              - ec2:DescribeAddresses
+              - logs:CreateLogDelivery
+              - ec2:DescribeFlowLogs
+              - ec2:DescribeNatGateways
+              - ec2:DescribeNetworkInterfaces
+            Effect: Allow
+            Resource: '*'
+          - Action:
+              - iam:CreateRole
+              - iam:GetRole
+              - iam:ListRolePolicies
+              - iam:ListAttachedRolePolicies
+              - iam:AttachRolePolicy
+              - iam:PassRole
+              - iam:DetachRolePolicy
+              - iam:ListInstanceProfilesForRole
+              - iam:DeleteRole
+            Effect: Allow
+            Resource: !Sub arn:aws:iam::${AWS::AccountId}:role/vpc-flow-log-role-*
+          - Action:
+              - iam:CreatePolicy
+              - iam:GetPolicy
+              - iam:GetPolicyVersion
+              - iam:ListPolicyVersions
+              - iam:DeletePolicy
+            Effect: Allow
+            Resource: !Sub arn:aws:iam::${AWS::AccountId}:policy/vpc-flow-log-to-cloudwatch-*
+          - Action:
+              - ec2:ModifyVpcAttribute
+              - ec2:DescribeVpcAttribute
+              - ec2:DeleteVpc
+            Effect: Allow
+            Resource: !Sub arn:aws:ec2:*:${AWS::AccountId}:vpc/*
+          - Action:
+              - ec2:CreateTags
+            Effect: Allow
+            Resource:
+              - !Sub arn:aws:ec2:*:${AWS::AccountId}:vpc/*
+              - !Sub arn:aws:ec2:*:${AWS::AccountId}:subnet/*
+              - !Sub arn:aws:ec2:*:${AWS::AccountId}:internet-gateway/*
+              - !Sub arn:aws:ec2:*:${AWS::AccountId}:route-table/*
+              - !Sub arn:aws:ec2:*:${AWS::AccountId}:security-group/*
+              - !Sub arn:aws:ec2:*:${AWS::AccountId}:elastic-ip/*
+              - !Sub arn:aws:ec2:*:${AWS::AccountId}:natgateway/*
+          - Action:
+              - ec2:CreateRouteTable
+              - ec2:CreateRoute
+              - ec2:DeleteRoute
+              - ec2:DeleteRouteTable
+            Effect: Allow
+            Resource:
+              - !Sub arn:aws:ec2:*:${AWS::AccountId}:route-table/*
+          - Action:
+              - ec2:CreateInternetGateway
+              - ec2:DeleteInternetGateway
+            Effect: Allow
+            Resource: !Sub arn:aws:ec2:*:${AWS::AccountId}:internet-gateway/*
+          - Action:
+              - ec2:AttachInternetGateway
+              - ec2:DetachInternetGateway
+            Effect: Allow
+            Resource:
+              - !Sub arn:aws:ec2:*:${AWS::AccountId}:internet-gateway/*
+              - !Sub arn:aws:ec2:*:${AWS::AccountId}:vpc/*
+          - Action:
+              - logs:CreateLogGroup
+              - logs:ListTagsLogGroup
+              - logs:DeleteLogGroup
+            Effect: Allow
+            Resource: !Sub arn:aws:logs:*:${AWS::AccountId}:log-group:/aws/vpc-flow-log/*
+          - Action:
+              - ec2:RevokeSecurityGroupIngress
+              - ec2:RevokeSecurityGroupEgress
+            Effect: Allow
+            Resource: !Sub arn:aws:ec2:*:${AWS::AccountId}:security-group/*
+          - Action:
+              - ec2:AssociateRouteTable
+              - ec2:DisassociateRouteTable
+            Effect: Allow
+            Resource:
+              - !Sub arn:aws:ec2:*:${AWS::AccountId}:route-table/*
+              - !Sub arn:aws:ec2:*:${AWS::AccountId}:subnet/*
+          - Action:
+              - ec2:AllocateAddress
+              - ec2:ReleaseAddress
+              - ec2:DisassociateAddress
+            Effect: Allow
+            Resource: !Sub arn:aws:ec2:*:${AWS::AccountId}:elastic-ip/*
+          - Action:
+              - ec2:CreateFlowLogs
+              - ec2:DeleteFlowLogs
+            Effect: Allow
+            Resource:
+              - !Sub arn:aws:ec2:*:${AWS::AccountId}:vpc-flow-log/*
+          - Action:
+              - ec2:CreateNatGateway
+              - ec2:DeleteNatGateway
+            Effect: Allow
+            Resource:
+              - !Sub arn:aws:ec2:*:${AWS::AccountId}:natgateway/*
+        Version: "2012-10-17"
+      PolicyName: VPCPolicy
+      Roles:
+        - !Ref GitHubActionsOIDCProviderRole
+
 Outputs:
   GitHubActionsOIDCProviderRole:
     Description: ARN of GitHubActions IAM Role.
