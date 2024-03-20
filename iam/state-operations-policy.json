@@ -1,0 +1,33 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:PutObject",
+        "s3:GetBucketVersioning",
+        "s3:GetEncryptionConfiguration",
+        "s3:GetBucketPolicy",
+        "s3:GetBucketPublicAccessBlock",
+        "s3:PutBucketPolicy"
+      ],
+      "Resource": [
+        "arn:aws:s3:::${StateBucketName}",
+        "arn:aws:s3:::${StateBucketName}/*"
+      ],
+      "Effect": "Allow"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:PutItem",
+        "dynamodb:GetItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:DeleteItem",
+        "dynamodb:CreateTable"
+      ],
+      "Resource": "arn:aws:dynamodb:*:*:table/${StateLockTableName}"
+    }
+  ]
+}

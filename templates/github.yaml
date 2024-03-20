@@ -17,12 +17,7 @@ Resources:
       PolicyName: StatePolicy
       Roles:
         - !Ref GitHubActionsOIDCProviderRole
-      PolicyDocument:
-        Fn::Transform:
-          Name: 'AWS::Include'
-          Parameters:
-            Location: "iam/github/state/iam-policy.json"
-
+      PolicyDocument: !Rain::Include state-operations-policy.json
   GitHubActionsOIDCProviderRole:
     Type: "AWS::IAM::Role"
     Properties:
