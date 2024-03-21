@@ -32,7 +32,7 @@ Resources:
               - ecr-public:DeleteRepositoryPolicy
               - ecr-public:ListTagsForResource
             Effect: Allow
-            Resource: !Sub arn:aws:ecr:*:${AWS::AccountId}:repository/*
+            Resource: !Sub arn:aws:ecr-public:*:${AWS::AccountId}:repository/*
         Version: "2012-10-17"
       PolicyName: ECRPublicPolicy
       Roles:
