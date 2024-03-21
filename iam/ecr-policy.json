@@ -14,7 +14,7 @@
         "ecr-public:DeleteRepositoryPolicy",
         "ecr-public:ListTagsForResource"
       ],
-      "Resource": "arn:aws:ecr:*:${AWS::AccountId}:repository/*"
+      "Resource": "arn:aws:ecr-public:*:${AWS::AccountId}:repository/*"
     }
   ]
 }
