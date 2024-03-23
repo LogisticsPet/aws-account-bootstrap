@@ -10,6 +10,10 @@ Parameters:
   StateLockTableName:
     Type: String
     Description: Name of Dynamo DB Table  for terraform state locking.
+  GitHubActionsRole:
+    Type: String
+    Description: Name of Role to be created for GitHub Actions auth
+    Default: GitHubActionsOIDCProviderRole
 Resources:
   StatePolicy:
     Type: "AWS::IAM::Policy"
@@ -32,12 +36,19 @@ Resources:
       Roles:
         - !Ref GitHubActionsOIDCProviderRole
       PolicyDocument: !Rain::Include route53-policy.json
+  EKSPolicy:
+    Type: "AWS::IAM::Policy"
+    Properties:
+      PolicyName: EKSPolicy
+      Roles:
+        - !Ref GitHubActionsOIDCProviderRole
+      PolicyDocument: !Rain::Include eks-policy.json
   GitHubActionsOIDCProviderRole:
     Type: "AWS::IAM::Role"
     Properties:
       Path: "/"
       MaxSessionDuration: 3600
-      RoleName: "GitHubActionsOIDCProviderRole"
+      RoleName: !Sub "${GitHubActionsRole}"
       Description: "OIDC Provider role for GitHub Actions."
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
