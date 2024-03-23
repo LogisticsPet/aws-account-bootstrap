@@ -27,7 +27,7 @@
         "dynamodb:DeleteItem",
         "dynamodb:CreateTable"
       ],
-      "Resource": "arn:aws:dynamodb:*:*:table/${StateLockTableName}"
+      "Resource": "arn:aws:dynamodb:*:${AWS::AccountId}:table/${StateLockTableName}"
     }
   ]
 }
