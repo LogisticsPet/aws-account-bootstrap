@@ -153,6 +153,20 @@ Resources:
             Effect: Allow
             Resource: !Sub arn:aws:ec2:*:${AWS::AccountId}:vpc/*
           - Action:
+              - ec2:CreateSubnet
+              - ec2:DeleteSubnet
+            Effect: Allow
+            Resource:
+              - !Sub arn:aws:ec2:*:${AWS::AccountId}:vpc/*
+              - !Sub arn:aws:ec2:*:${AWS::AccountId}:subnet/*
+          - Action:
+              - ec2:CreateRouteTable
+              - ec2:DeleteRouteTable
+            Effect: Allow
+            Resource:
+              - !Sub arn:aws:ec2:*:${AWS::AccountId}:vpc/*
+              - !Sub arn:aws:ec2:*:${AWS::AccountId}:route-table/*
+          - Action:
               - ec2:CreateTags
             Effect: Allow
             Resource:
@@ -206,19 +220,23 @@ Resources:
               - ec2:ReleaseAddress
               - ec2:DisassociateAddress
             Effect: Allow
-            Resource: !Sub arn:aws:ec2:*:${AWS::AccountId}:elastic-ip/*
+            Resource:
+              - !Sub arn:aws:ec2:*:${AWS::AccountId}:elastic-ip/*
+              - !Sub arn:aws:ec2:*:${AWS::AccountId}:*/*
           - Action:
               - ec2:CreateFlowLogs
               - ec2:DeleteFlowLogs
             Effect: Allow
             Resource:
               - !Sub arn:aws:ec2:*:${AWS::AccountId}:vpc-flow-log/*
+              - !Sub arn:aws:ec2:*:${AWS::AccountId}:vpc/*
           - Action:
               - ec2:CreateNatGateway
               - ec2:DeleteNatGateway
             Effect: Allow
             Resource:
               - !Sub arn:aws:ec2:*:${AWS::AccountId}:natgateway/*
+              - !Sub arn:aws:ec2:*:${AWS::AccountId}:elastic-ip/*
         Version: "2012-10-17"
       PolicyName: VPCPolicy
       Roles:
