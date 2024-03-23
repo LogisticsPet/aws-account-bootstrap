@@ -3,6 +3,11 @@ AWSTemplateFormatVersion: "2010-09-09"
 Description: Cloud Formation template to configure GitHub Actions Authentication. OIDC provider, IAM role that can be supplied to GitHubAction to authenticate.
 
 Parameters:
+  GitHubActionsRole:
+    Description: Name of Role to be created for GitHub Actions auth
+    Type: String
+    Default: GitHubActionsOIDCProviderRole
+
   GitHubOrg:
     Description: Github Organization.
     Type: String
@@ -16,6 +21,153 @@ Parameters:
     Type: String
 
 Resources:
+  EKSPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - sts:GetCallerIdentity
+              - ec2:DescribeImages
+              - ec2:DescribeTags
+              - ec2:DescribeSecurityGroups
+              - logs:DescribeLogGroups
+              - kms:CreateKey
+              - eks:CreateCluster
+              - kms:ListAliases
+              - eks:DescribeAddonVersions
+              - ec2:DescribeSecurityGroupRules
+              - eks:DeleteAddon
+              - elasticloadbalancing:DescribeLoadBalancers
+              - elasticloadbalancing:DescribeLoadBalancerAttributes
+              - elasticloadbalancing:DescribeTags
+            Effect: Allow
+            Resource: '*'
+          - Action:
+              - iam:CreateOpenIDConnectProvider
+              - iam:GetOpenIDConnectProvider
+              - iam:DeleteOpenIDConnectProvider
+              - iam:TagOpenIDConnectProvider
+            Effect: Allow
+            Resource: !Sub arn:aws:iam::${AWS::AccountId}:oidc-provider/oidc.eks.*.amazonaws.com/id/*
+          - Action:
+              - ec2:CreateSecurityGroup
+            Effect: Allow
+            Resource:
+              - !Sub arn:aws:ec2:*:${AWS::AccountId}:security-group/*
+              - !Sub arn:aws:ec2:*:${AWS::AccountId}:vpc/*
+          - Action:
+              - iam:CreatePolicy
+              - iam:GetPolicy
+              - iam:GetPolicyVersion
+              - iam:ListPolicyVersions
+              - iam:DeletePolicy
+              - iam:TagPolicy
+            Effect: Allow
+            Resource: !Sub arn:aws:iam::${AWS::AccountId}:policy/*
+          - Action:
+              - logs:DeleteLogGroup
+            Effect: Allow
+            Resource: !Sub arn:aws:logs:*:${AWS::AccountId}:log-group:/aws/eks/*/cluster:log-stream
+          - Action:
+              - eks:DeleteNodegroup
+            Effect: Allow
+            Resource: !Sub arn:aws:eks:*:${AWS::AccountId}:nodegroup/*
+          - Action:
+              - logs:ListTagsLogGroup
+              - logs:DeleteLogGroup
+              - logs:CreateLogGroup
+              - logs:TagResource
+              - logs:PutRetentionPolicy
+            Effect: Allow
+            Resource:
+              - !Sub arn:aws:logs:*:${AWS::AccountId}:log-group:/aws/eks/*/cluster
+              - !Sub arn:aws:logs:*:${AWS::AccountId}:log-group:/aws/eks/*/cluster:log-stream:*
+          - Action:
+              - iam:CreateRole
+              - iam:PutRolePolicy
+              - iam:GetRole
+              - iam:ListRolePolicies
+              - iam:GetRolePolicy
+              - iam:ListAttachedRolePolicies
+              - iam:AttachRolePolicy
+              - iam:PassRole
+              - iam:DetachRolePolicy
+              - iam:ListInstanceProfilesForRole
+              - iam:DeleteRolePolicy
+              - iam:DeleteRole
+            Effect: Allow
+            Resource: !Sub arn:aws:iam::${AWS::AccountId}:role/*
+          - Action:
+              - ec2:RevokeSecurityGroupEgress
+              - ec2:AuthorizeSecurityGroupIngress
+              - ec2:AuthorizeSecurityGroupEgress
+            Effect: Allow
+            Resource: !Sub arn:aws:ec2:*:${AWS::AccountId}:security-group/*
+          - Action:
+              - kms:EnableKeyRotation
+              - kms:GetKeyRotationStatus
+              - kms:GetKeyPolicy
+              - kms:ListResourceTags
+              - kms:DescribeKey
+              - kms:ScheduleKeyDeletion
+              - kms:TagResource
+            Effect: Allow
+            Resource: !Sub arn:aws:kms:*:${AWS::AccountId}:key/*
+          - Action:
+              - kms:CreateAlias
+              - kms:DeleteAlias
+            Effect: Allow
+            Resource:
+              - !Sub arn:aws:kms:*:${AWS::AccountId}:alias/eks/*
+              - !Sub arn:aws:kms:*:${AWS::AccountId}:key/*
+          - Action:
+              - eks:DescribeCluster
+              - eks:CreateNodegroup
+              - eks:CreateAddon
+              - eks:DeleteCluster
+              - eks:TagResource
+              - eks:CreateAccessEntry
+              - eks:DeleteAccessEntry
+            Effect: Allow
+            Resource: !Sub arn:aws:eks:*:${AWS::AccountId}:cluster/*
+          - Action:
+              - eks:DescribeNodegroup
+              - iam:DeleteRole
+            Effect: Allow
+            Resource: !Sub arn:aws:eks:*:${AWS::AccountId}:nodegroup/*/*/*
+          - Action:
+              - eks:DescribeAddon
+            Effect: Allow
+            Resource:
+              - !Sub arn:aws:eks:*:${AWS::AccountId}:addon/*/aws-ebs-csi-driver/*
+              - !Sub arn:aws:eks:*:${AWS::AccountId}:addon/*/coredns/*
+              - !Sub arn:aws:eks:*:${AWS::AccountId}:addon/*/kube-proxy/*
+              - !Sub arn:aws:eks:*:${AWS::AccountId}:addon/*/vpc-cni/*
+          - Action:
+              - ec2:DeleteTags
+            Effect: Allow
+            Resource:
+              - !Sub arn:aws:ec2:*:${AWS::AccountId}:subnet/*
+          - Action:
+              - ec2:DeleteSecurityGroup
+            Effect: Allow
+            Resource:
+              - !Sub arn:aws:ec2:*:${AWS::AccountId}:security-group/*
+          - Action:
+              - eks:DescribeAccessEntry
+              - eks:DeleteAccessEntry
+              - eks:AssociateAccessPolicy
+              - eks:DisassociateAccessPolicy
+              - eks:ListAssociatedAccessPolicies
+            Effect: Allow
+            Resource:
+              - !Sub arn:aws:eks:*:${AWS::AccountId}:access-entry/*/role/${AWS::AccountId}/${GitHubActionsRole}/*
+        Version: "2012-10-17"
+      PolicyName: EKSPolicy
+      Roles:
+        - !Ref GitHubActionsOIDCProviderRole
+
   GitHubActionsOIDCProviderRole:
     Type: AWS::IAM::Role
     Properties:
@@ -34,7 +186,7 @@ Resources:
       Description: OIDC Provider role for GitHub Actions.
       MaxSessionDuration: 3600
       Path: /
-      RoleName: GitHubActionsOIDCProviderRole
+      RoleName: !Sub ${GitHubActionsRole}
 
   GitHubOIDCProvider:
     Type: AWS::IAM::OIDCProvider
