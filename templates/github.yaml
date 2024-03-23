@@ -25,6 +25,13 @@ Resources:
       Roles:
         - !Ref GitHubActionsOIDCProviderRole
       PolicyDocument: !Rain::Include vpc-policy.json
+  Route53Policy:
+    Type: "AWS::IAM::Policy"
+    Properties:
+      PolicyName: Route53Policy
+      Roles:
+        - !Ref GitHubActionsOIDCProviderRole
+      PolicyDocument: !Rain::Include route53-policy.json
   GitHubActionsOIDCProviderRole:
     Type: "AWS::IAM::Role"
     Properties:
