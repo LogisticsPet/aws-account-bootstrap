@@ -71,7 +71,7 @@ Resources:
               - dynamodb:DeleteItem
               - dynamodb:CreateTable
             Effect: Allow
-            Resource: !Sub arn:aws:dynamodb:*:*:table/${StateLockTableName}
+            Resource: !Sub arn:aws:dynamodb:*:${AWS::AccountId}:table/${StateLockTableName}
         Version: "2012-10-17"
       PolicyName: StatePolicy
       Roles:
