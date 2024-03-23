@@ -51,6 +51,7 @@
     {
       "Effect": "Allow",
       "Action": [
+        "ec2:CreateVpc",
         "ec2:ModifyVpcAttribute",
         "ec2:DescribeVpcAttribute",
         "ec2:DeleteVpc"
