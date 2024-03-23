@@ -121,6 +121,7 @@ Resources:
             Effect: Allow
             Resource: !Sub arn:aws:iam::${AWS::AccountId}:policy/vpc-flow-log-to-cloudwatch-*
           - Action:
+              - ec2:CreateVpc
               - ec2:ModifyVpcAttribute
               - ec2:DescribeVpcAttribute
               - ec2:DeleteVpc
