@@ -12,7 +12,7 @@ Resources:
       EncryptionConfiguration:
         EncryptionType: "AES256"
       ImageScanningConfiguration:
-        scanOnPush: true
+        ScanOnPush: true
       LifecyclePolicy:
         LifecyclePolicyText: |
           {
@@ -34,4 +34,4 @@ Resources:
 Outputs:
   ECRRepositoryUri:
     Description: "URI of the created ECR repository"
-    Value: !Sub "arn:aws:ecr:${AWS::Region}:${AWS::AccountId}:repository/${RepositoryName}"
+    Value: !Sub "arn:aws:ecr:${AWS::Region}:${AWS::AccountId}:repository/${RegistryName}"
