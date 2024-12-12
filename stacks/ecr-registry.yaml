@@ -1,0 +1,4 @@
+template-file-path: ./generated/ecr-registry.yaml
+
+parameters:
+  RegistryName: logistics

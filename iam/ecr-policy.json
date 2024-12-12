@@ -4,17 +4,17 @@
     {
       "Effect": "Allow",
       "Action": [
-        "ecr-public:CreateRepository",
-        "ecr-public:DeleteRepository",
-        "ecr-public:DescribeRepositories",
-        "ecr-public:TagResource",
-        "ecr-public:GetRepositoryCatalogData",
-        "ecr-public:GetRepositoryPolicy",
-        "ecr-public:SetRepositoryPolicy",
-        "ecr-public:DeleteRepositoryPolicy",
-        "ecr-public:ListTagsForResource"
+        "ecr:CreateRepository",
+        "ecr:DeleteRepository",
+        "ecr:DescribeRepositories",
+        "ecr:TagResource",
+        "ecr:GetRepositoryCatalogData",
+        "ecr:GetRepositoryPolicy",
+        "ecr:SetRepositoryPolicy",
+        "ecr:DeleteRepositoryPolicy",
+        "ecr:ListTagsForResource"
       ],
-      "Resource": "arn:aws:ecr-public:*:${AWS::AccountId}:repository/*"
+      "Resource": "arn:aws:ecr:*:${AWS::AccountId}:repository/${RegistryName}"
     }
   ]
 }

@@ -1,13 +1,16 @@
-# CloudFormation Templates for Terraform Authentication
+# CloudFormation Templates for AWS Account provisioning
 
-This repository contains CloudFormation templates for setting up authentication via Terraform Cloud OIDC or GitHub OIDC provider and assuming roles for managing infrastructure. These templates include the definition of the OIDC provider, the role to be assumed, and the necessary policies to create and manage infrastructure resources.
+This repository contains CloudFormation templates for setting up authentication via GitHub OIDC provider and assuming roles for managing infrastructure.
+These templates include the definition of the OIDC provider, the role to be assumed, and the necessary policies to create and manage infrastructure resources.
+Also, includes template for creation Terraform state management resources, as well as ECR for storing container images. 
 
 ## Templates
 
 The following CloudFormation templates are available:
 
-1. `templates/terraform-cloud.yaml`: This template sets up an OIDC provider, IAM Role and IAM Policy with Required policy set of permissions for Terraform Cloud authentication.
+1. `templates/terraform-state.yaml`: This template sets up a S3 Bucket and DynamoDB table for terraform state storing and locking.
 2. `templates/github.yaml`: This template sets up an OIDC provider, IAM Role and IAM Policy with Required policy set of permissions for GitHub authentication.
+2. `templates/ecr-registry.yaml`: This template sets up a private ECR registry for storing Docker images and Helm charts.
 
 ## Usage
 

@@ -4,16 +4,16 @@ Parameters:
   GitHubOrg:
     Type: String
     Description: Github Organization.
+  GitHubActionsRole:
+    Type: String
+    Description: Name of Role to be created for GitHub Actions auth
+    Default: GitHubActionsOIDCProviderRole
   StateBucketName:
     Type: String
     Description: Name of S3 bucket for terraform state.
   StateLockTableName:
     Type: String
     Description: Name of Dynamo DB Table  for terraform state locking.
-  GitHubActionsRole:
-    Type: String
-    Description: Name of Role to be created for GitHub Actions auth
-    Default: GitHubActionsOIDCProviderRole
 Resources:
   StatePolicy:
     Type: "AWS::IAM::Policy"
