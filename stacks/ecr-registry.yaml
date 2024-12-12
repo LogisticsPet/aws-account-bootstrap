@@ -1,4 +1,3 @@
-template-file-path: ./generated/ecr-registry.yaml
-
-parameters:
-  RegistryName: logistics
+template-file-path: stacks/ecr-registry.yaml
+parameters: {}
+tags: {}
