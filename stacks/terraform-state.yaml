@@ -1,5 +1,3 @@
-template-file-path: ./generated/terraform-state.yaml
-
-parameters:
-  StateBucketName: logistics-tf-state
-  StateLockTableName: logistics-tf-state-lock
+template-file-path: stacks/terraform-state.yaml
+parameters: {}
+tags: {}
