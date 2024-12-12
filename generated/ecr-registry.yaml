@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: Cloud Formation template to create Private ECR Registry used for Storing docker images and Helm charts
+
+Parameters:
+  RegistryName:
+    Type: String
+    Description: Name of ECR registry to create
+
+Resources:
+  ECRRegistry:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: !Ref RegistryName
+      EncryptionConfiguration:
+        EncryptionType: AES256
+      ImageScanningConfiguration:
+        ScanOnPush: true
+      LifecyclePolicy:
+        LifecyclePolicyText: |
+          {
+            "rules": [
+              {
+                "rulePriority": 1,
+                "description": "Retain images for 30 days",
+                "selection": {
+                  "tagStatus": "any",
+                  "countType": "imageCountMoreThan",
+                  "countNumber": 1
+                },
+                "action": {
+                  "type": "expire"
+                }
+              }
+            ]
+          }
+
+Outputs:
+  ECRRepositoryUri:
+    Description: URI of the created ECR repository
+    Value: !Sub arn:aws:ecr:${AWS::Region}:${AWS::AccountId}:repository/${RegistryName}
+
