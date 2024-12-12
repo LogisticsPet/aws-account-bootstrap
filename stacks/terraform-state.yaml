@@ -1,6 +1,5 @@
-template-file-path: ./generated/github-oidc.yaml
+template-file-path: ./generated/terraform-state.yaml
 
 parameters:
-  GitHubOrg: MikalaiYatsyna
   StateBucketName: logistics-tf-state
   StateLockTableName: logistics-tf-state-lock

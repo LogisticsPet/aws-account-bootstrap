@@ -38,24 +38,27 @@ jobs:
         run: python3 ./transformation/transform.py -i ./iam -o ./templates
 
       - name: Create output files
-        run: mkdir -p ./generated && touch ./generated/terraform-cloud.yaml && touch ./generated/github.yaml
+        run: mkdir -p ./generated && touch ./generated/terraform-state.yaml && touch ./generated/github-oidc.yaml
 
-      - name: Build Terraform Cloud template
-        run: ./rain package templates/terraform-cloud.yaml | tee ./generated/terraform-cloud.yaml
+      - name: Build Terraform State template
+        run: ./rain package templates/terraform-state.yaml | tee ./generated/terraform-state.yaml
 
       - name: Build Github Actions template
-        run: ./rain package templates/github.yaml | tee ./generated/github.yaml
+        run: ./rain package templates/github-oidc.yaml | tee ./generated/github-oidc.yaml
+
+      - name: Build ECR template
+        run: ./rain package templates/ecr-registry.yaml | tee ./generated/ecr-registry.yaml
 
       - name: Upload Github Actions Template
         uses: actions/upload-artifact@v4
         with:
-          path: generated/terraform-cloud.yaml
+          path: generated/terraform-state.yaml
           name: terraform-cloud-template.yaml
             
       - name: Upload Terraform Cloud Template
         uses: actions/upload-artifact@v4
         with:
-          path: generated/github.yaml
+          path: generated/github-oidc.yaml
           name: github-actions-template.yaml
 
       - name: Run Linter.

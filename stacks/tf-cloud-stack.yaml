@@ -1,6 +1,0 @@
-template-file-path: ./generated/terraform-cloud.yaml
-
-parameters:
-  AWSRegion: us-east-2
-  TFCloudOrg: logistic
-  TFCloudProject: aws
