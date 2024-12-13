@@ -10,7 +10,7 @@ The following CloudFormation templates are available:
 
 1. `templates/terraform-state.yaml`: This template sets up a S3 Bucket and DynamoDB table for terraform state storing and locking.
 2. `templates/github.yaml`: This template sets up an OIDC provider, IAM Role and IAM Policy with Required policy set of permissions for GitHub authentication.
-2. `templates/ecr-registry.yaml`: This template sets up a private ECR registry for storing Docker images and Helm charts.
+3. `templates/ecr-registry.yaml`: This template sets up a private ECR registry for storing Docker images and Helm charts.
 
 #### Usage
 
