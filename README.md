@@ -19,7 +19,7 @@ Ensure that you review and customize the templates according to your specific re
 To use these templates, follow these steps:
 
 1. Create and configure Cloud Formation stacks with Git Sync([AWS docs](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/git-sync.html)). 
-2. Following policy to create Cloud Formation Git Sync role.
+2. Use Following policy to create Cloud Formation Git Sync role.
 
 ```json
 {
