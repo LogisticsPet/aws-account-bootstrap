@@ -186,7 +186,8 @@
       ],
       "Resource": [
         "arn:aws:ec2:*:${AWS::AccountId}:natgateway/*",
-        "arn:aws:ec2:*:${AWS::AccountId}:elastic-ip/*"
+        "arn:aws:ec2:*:${AWS::AccountId}:elastic-ip/*",
+        "arn:aws:ec2:*:${AWS::AccountId}:subnet/subnet-*"
       ],
       "Effect": "Allow"
     }
