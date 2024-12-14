@@ -1,10 +1,10 @@
-### CloudFormation Templates for AWS Account bootstrapping
+# Cloud Formation stacks for account bootstrapping <!-- {docsify-ignore} -->
 
-This repository contains CloudFormation templates for setting up authentication via GitHub OIDC provider and assuming roles for managing infrastructure.
-These templates include the definition of the OIDC provider, the role to be assumed, and the necessary policies to create and manage infrastructure resources.
-Also, includes template for creation Terraform state management resources, as well as ECR for storing container images. 
+In order to enable GitHub Actions to create resources in AWS, it's essential to set up AWS Authentication. The preferred method involves configuring an OIDC provider, which leverages OIDC to acquire the short-lived credentials necessary for performing actions.
 
-#### Templates
+To establish the OIDC provider, IAM Role, and IAM Policy, CloudFormation stacks have been defined.
+
+## Templates
 
 The following CloudFormation templates are available:
 
@@ -12,7 +12,7 @@ The following CloudFormation templates are available:
 2. `templates/github.yaml`: This template sets up an OIDC provider, IAM Role and IAM Policy with Required policy set of permissions for GitHub authentication.
 3. `templates/ecr-registry.yaml`: This template sets up a private ECR registry for storing Docker images and Helm charts.
 
-#### Usage
+## Usage
 
 Ensure that you review and customize the templates according to your specific requirements before deployment.
 
