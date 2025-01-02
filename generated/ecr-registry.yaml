@@ -4,8 +4,8 @@ Description: Cloud Formation template to create Private ECR Registry used for St
 
 Parameters:
   RegistryName:
-    Type: String
     Description: Name of ECR registry to create
+    Type: String
 
 Resources:
   ECRRegistry:

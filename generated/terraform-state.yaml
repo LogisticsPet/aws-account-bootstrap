@@ -4,12 +4,12 @@ Description: Cloud Formation template to create S3 Bucket for Terraform state
 
 Parameters:
   StateBucketName:
-    Type: String
     Description: Name of S3 bucket for terraform state.
+    Type: String
 
   StateLockTableName:
-    Type: String
     Description: Name of Dynamo DB Table  for terraform state locking.
+    Type: String
 
 Resources:
 
