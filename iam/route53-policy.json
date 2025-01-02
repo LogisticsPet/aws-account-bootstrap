@@ -22,7 +22,8 @@
         "route53:GetHostedZone",
         "route53:ListTagsForResource",
         "route53:ChangeTagsForResource",
-        "route53:ListResourceRecordSets"
+        "route53:ListResourceRecordSets",
+        "route53:GetDNSSEC"
       ],
       "Resource": "arn:aws:route53:::hostedzone/*"
     }
