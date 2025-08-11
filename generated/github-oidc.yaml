@@ -2,6 +2,10 @@ AWSTemplateFormatVersion: "2010-09-09"
 
 Description: Cloud Formation template to configure GitHub Actions Authentication. OIDC provider, IAM role that can be supplied to GitHubAction to authenticate.
 
+Metadata:
+  AWSToolsMetrics:
+    Rain: '{"Version":"v1.23.1","Experimental":false,"HasModules":false,"HasRainSection":false}'
+
 Parameters:
   GitHubOrg:
     Description: Github Organization.

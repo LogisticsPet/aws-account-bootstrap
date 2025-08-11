@@ -2,6 +2,10 @@ AWSTemplateFormatVersion: "2010-09-09"
 
 Description: Cloud Formation template to create Private ECR Registry used for Storing docker images and Helm charts
 
+Metadata:
+  AWSToolsMetrics:
+    Rain: '{"Version":"v1.23.1","Experimental":false,"HasModules":false,"HasRainSection":false}'
+
 Parameters:
   RegistryName:
     Description: Name of ECR registry to create
