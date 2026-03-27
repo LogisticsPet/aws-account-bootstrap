@@ -65,7 +65,7 @@ jobs:
         run: cfn-lint generated/*.yaml
 
       - name: Commit rendered changes
-        uses: EndBug/add-and-commit@v9.1.4
+        uses: EndBug/add-and-commit@v10.0.0
         with:
           author_name: iam-ci-bot
           author_email: iam-ci-bot@logisticsonline.uk
