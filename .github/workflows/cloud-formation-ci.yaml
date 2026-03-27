@@ -50,13 +50,13 @@ jobs:
         run: ./rain package templates/ecr-registry.yaml | tee ./generated/ecr-registry.yaml
 
       - name: Upload Github Actions Template
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           path: generated/terraform-state.yaml
           name: terraform-cloud-template.yaml
             
       - name: Upload Terraform Cloud Template
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           path: generated/github-oidc.yaml
           name: github-actions-template.yaml
