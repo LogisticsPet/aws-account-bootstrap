@@ -4,7 +4,7 @@ Description: Cloud Formation template to create S3 Bucket for Terraform state
 
 Metadata:
   AWSToolsMetrics:
-    Rain: '{"Version":"v1.21.0","Experimental":false,"HasModules":false,"HasRainSection":false}'
+    Rain: '{"Version":"v1.24.3","Experimental":false,"HasModules":false,"HasRainSection":false}'
 
 Parameters:
   StateBucketName:
