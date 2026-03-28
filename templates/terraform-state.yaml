@@ -6,8 +6,45 @@ Parameters:
     Description: Name of S3 bucket for terraform state.
   StateLockTableName:
     Type: String
-    Description: Name of Dynamo DB Table  for terraform state locking.
+    Description: Name of Dynamo DB Table for terraform state locking.
+  ReplicaBucketArn:
+    Type: String
+    Description: ARN of the replica S3 bucket in the secondary region (eu-west-1).
 Resources:
+  StateReplicationRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: terraform-state-replication-role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: s3.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: TerraformStateReplicationPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetReplicationConfiguration
+                  - s3:ListBucket
+                Resource: !Sub "arn:aws:s3:::${StateBucketName}"
+              - Effect: Allow
+                Action:
+                  - s3:GetObjectVersionForReplication
+                  - s3:GetObjectVersionAcl
+                  - s3:GetObjectVersionTagging
+                Resource: !Sub "arn:aws:s3:::${StateBucketName}/*"
+              - Effect: Allow
+                Action:
+                  - s3:ReplicateObject
+                  - s3:ReplicateDelete
+                  - s3:ReplicateTags
+                Resource: !Sub "${ReplicaBucketArn}/*"
+
   # S3 Bucket for Terraform State
   StateBucket:
     Type: "AWS::S3::Bucket"
@@ -15,11 +52,19 @@ Resources:
       BucketName: !Ref StateBucketName
       VersioningConfiguration:
         Status: Enabled
+      ReplicationConfiguration:
+        Role: !GetAtt StateReplicationRole.Arn
+        Rules:
+          - Id: ReplicateAll
+            Status: Enabled
+            Destination:
+              Bucket: !Ref ReplicaBucketArn
       LifecycleConfiguration:
         Rules:
           - Status: Enabled
             ExpirationInDays: 365
             Prefix: "terraform-state/"
+
   StateLockTable:
     Type: "AWS::DynamoDB::Table"
     Properties:
