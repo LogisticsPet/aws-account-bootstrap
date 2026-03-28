@@ -1,6 +1,3 @@
-template-file-path: ./generated/github-oidc.yaml
-
-parameters:
-  GitHubOrg: LogisticsPet
-  StateBucketName: logistics-tf-state
-  StateLockTableName: logistics-tf-state-lock
+template-file-path: stacks/github-stack.yaml
+parameters: {}
+tags: {}
