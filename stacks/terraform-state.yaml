@@ -1,6 +1,3 @@
-template-file-path: ./generated/terraform-state.yaml
-
-parameters:
-  StateBucketName: logistics-tf-state
-  StateLockTableName: logistics-tf-state-lock
-  ReplicaBucketArn: arn:aws:s3:::logistics-tf-state-replica
+template-file-path: stacks/terraform-state.yaml
+parameters: {}
+tags: {}
