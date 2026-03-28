@@ -43,6 +43,9 @@ jobs:
       - name: Build Terraform State template
         run: ./rain package templates/terraform-state.yaml | tee ./generated/terraform-state.yaml
 
+      - name: Build Terraform State Replica template
+        run: ./rain package templates/terraform-state-replica.yaml | tee ./generated/terraform-state-replica.yaml
+
       - name: Build Github Actions template
         run: ./rain package templates/github-oidc.yaml | tee ./generated/github-oidc.yaml
 
