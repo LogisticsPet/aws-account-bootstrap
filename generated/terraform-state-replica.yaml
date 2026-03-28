@@ -1,0 +1,34 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: S3 replica bucket for Terraform state cross-region replication (secondary region)
+
+Metadata:
+  AWSToolsMetrics:
+    Rain: '{"Version":"v1.24.3","Experimental":false,"HasModules":false,"HasRainSection":false}'
+
+Parameters:
+  ReplicaBucketName:
+    Description: Name of the replica S3 bucket in the secondary region.
+    Type: String
+
+Resources:
+  StateBucketReplica:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref ReplicaBucketName
+      VersioningConfiguration:
+        Status: Enabled
+      LifecycleConfiguration:
+        Rules:
+          - Status: Enabled
+            NoncurrentVersionExpirationInDays: 90
+
+Outputs:
+  ReplicaBucketArn:
+    Description: ARN of the replica S3 bucket
+    Value: !GetAtt StateBucketReplica.Arn
+
+  ReplicaBucketName:
+    Description: Name of the replica S3 bucket
+    Value: !Ref StateBucketReplica
+
