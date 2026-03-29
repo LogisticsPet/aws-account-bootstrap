@@ -129,7 +129,8 @@
         "iam:DeletePolicyVersion",
         "iam:DeletePolicy",
         "iam:CreatePolicy",
-        "iam:TagPolicy"
+        "iam:TagPolicy",
+        "iam:PassRole"
       ],
       "Resource": "arn:aws:iam::<account-id>:policy/*",
       "Effect": "Allow"
