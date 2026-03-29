@@ -114,7 +114,8 @@
         "s3:PutBucketTagging",
         "s3:PutBucketAcl",
         "s3:PutBucketOwnershipControls",
-        "s3:GetBucketOwnershipControls"
+        "s3:GetBucketOwnershipControls",
+        "s3:PutReplicationConfiguration"
       ],
       "Resource": "arn:aws:s3:::*",
       "Effect": "Allow"
