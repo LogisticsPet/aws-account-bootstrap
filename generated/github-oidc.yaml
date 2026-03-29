@@ -20,10 +20,6 @@ Parameters:
     Description: Name of S3 bucket for terraform state.
     Type: String
 
-  StateLockTableName:
-    Description: Name of Dynamo DB Table  for terraform state locking.
-    Type: String
-
 Resources:
   StatePolicy:
     Type: AWS::IAM::Policy
@@ -47,14 +43,21 @@ Resources:
               - !Sub arn:aws:s3:::${StateBucketName}
               - !Sub arn:aws:s3:::${StateBucketName}/*
             Effect: Allow
+
+  SecretsPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: SecretsPolicy
+      Roles:
+        - !Ref GitHubActionsOIDCProviderRole
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
           - Effect: Allow
             Action:
-              - dynamodb:PutItem
-              - dynamodb:GetItem
-              - dynamodb:DescribeTable
-              - dynamodb:DeleteItem
-              - dynamodb:CreateTable
-            Resource: !Sub arn:aws:dynamodb:*:${AWS::AccountId}:table/${StateLockTableName}
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Resource: !Sub arn:aws:secretsmanager:*:${AWS::AccountId}:secret:logistics/flux/*
 
   VpcPolicy:
     Type: AWS::IAM::Policy

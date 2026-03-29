@@ -17,17 +17,6 @@
         "arn:aws:s3:::${StateBucketName}/*"
       ],
       "Effect": "Allow"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "dynamodb:PutItem",
-        "dynamodb:GetItem",
-        "dynamodb:DescribeTable",
-        "dynamodb:DeleteItem",
-        "dynamodb:CreateTable"
-      ],
-      "Resource": "arn:aws:dynamodb:*:${AWS::AccountId}:table/${StateLockTableName}"
     }
   ]
 }
