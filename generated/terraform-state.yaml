@@ -11,10 +11,6 @@ Parameters:
     Description: Name of S3 bucket for terraform state.
     Type: String
 
-  StateLockTableName:
-    Description: Name of Dynamo DB Table for terraform state locking.
-    Type: String
-
   ReplicaBucketArn:
     Description: ARN of the replica S3 bucket in the secondary region (eu-west-1).
     Type: String
@@ -74,30 +70,8 @@ Resources:
             ExpirationInDays: 365
             Prefix: terraform-state/
 
-  StateLockTable:
-    Type: AWS::DynamoDB::Table
-    Properties:
-      TableName: !Ref StateLockTableName
-      AttributeDefinitions:
-        - AttributeName: LockID
-          AttributeType: S
-      KeySchema:
-        - AttributeName: LockID
-          KeyType: HASH
-      ProvisionedThroughput:
-        ReadCapacityUnits: 5
-        WriteCapacityUnits: 5
-      TimeToLiveSpecification:
-        AttributeName: TTL
-        Enabled: true
-      BillingMode: PROVISIONED
-
 Outputs:
   S3BucketName:
     Description: The name of the S3 bucket for Terraform state
     Value: !Ref StateBucket
-
-  DynamoDBTableName:
-    Description: The name of the DynamoDB table for Terraform state locking
-    Value: !Ref StateLockTable
 
