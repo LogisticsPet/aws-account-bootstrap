@@ -95,7 +95,8 @@
                 "iam:DetachRolePolicy",
                 "iam:ListInstanceProfilesForRole",
                 "iam:DeleteRolePolicy",
-                "iam:DeleteRole"
+                "iam:DeleteRole",
+                "iam:UpdateAssumeRolePolicy"
             ],
             "Resource": "arn:aws:iam::${AWS::AccountId}:role/*"
         },

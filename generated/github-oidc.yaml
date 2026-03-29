@@ -310,6 +310,7 @@ Resources:
               - iam:ListInstanceProfilesForRole
               - iam:DeleteRolePolicy
               - iam:DeleteRole
+              - iam:UpdateAssumeRolePolicy
             Resource: !Sub arn:aws:iam::${AWS::AccountId}:role/*
           - Effect: Allow
             Action:
