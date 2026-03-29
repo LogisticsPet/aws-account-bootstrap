@@ -1,4 +1,3 @@
-template-file-path: ./generated/terraform-state-replica.yaml
-
-parameters:
-  ReplicaBucketName: logistics-tf-state-replica
+template-file-path: stacks/terraform-state-replica.yaml
+parameters: {}
+tags: {}
