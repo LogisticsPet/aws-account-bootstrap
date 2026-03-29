@@ -47,14 +47,6 @@ Resources:
               - !Sub arn:aws:s3:::${StateBucketName}
               - !Sub arn:aws:s3:::${StateBucketName}/*
             Effect: Allow
-          - Effect: Allow
-            Action:
-              - dynamodb:PutItem
-              - dynamodb:GetItem
-              - dynamodb:DescribeTable
-              - dynamodb:DeleteItem
-              - dynamodb:CreateTable
-            Resource: !Sub arn:aws:dynamodb:*:${AWS::AccountId}:table/${StateLockTableName}
 
   VpcPolicy:
     Type: AWS::IAM::Policy
