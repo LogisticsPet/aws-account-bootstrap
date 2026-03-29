@@ -56,21 +56,6 @@
     },
     {
       "Action": [
-        "dynamodb:CreateTable",
-        "dynamodb:DescribeTable",
-        "dynamodb:DescribeContinuousBackups",
-        "dynamodb:DescribeTimeToLive",
-        "dynamodb:ListTagsOfResource",
-        "dynamodb:DeleteTable",
-        "dynamodb:TagResource",
-        "dynamodb:UpdateContinuousBackups",
-        "dynamodb:UpdateTimeToLive"
-      ],
-      "Resource": "arn:aws:dynamodb:*:<account-id>:table/*",
-      "Effect": "Allow"
-    },
-    {
-      "Action": [
         "kms:ListAliases",
         "kms:TagResource",
         "kms:CreateKey",
