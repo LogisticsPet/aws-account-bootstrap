@@ -19,6 +19,13 @@ Resources:
       Roles:
         - !Ref GitHubActionsOIDCProviderRole
       PolicyDocument: !Rain::Include state-operations-policy.json
+  SecretsPolicy:
+    Type: "AWS::IAM::Policy"
+    Properties:
+      PolicyName: SecretsPolicy
+      Roles:
+        - !Ref GitHubActionsOIDCProviderRole
+      PolicyDocument: !Rain::Include secrets-policy.json
   VpcPolicy:
     Type: "AWS::IAM::Policy"
     Properties:

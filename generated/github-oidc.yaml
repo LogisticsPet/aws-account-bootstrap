@@ -44,6 +44,21 @@ Resources:
               - !Sub arn:aws:s3:::${StateBucketName}/*
             Effect: Allow
 
+  SecretsPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: SecretsPolicy
+      Roles:
+        - !Ref GitHubActionsOIDCProviderRole
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Resource: !Sub arn:aws:secretsmanager:*:${AWS::AccountId}:secret:logistics/flux/*
+
   VpcPolicy:
     Type: AWS::IAM::Policy
     Properties:
