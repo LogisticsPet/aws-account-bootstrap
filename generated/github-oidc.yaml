@@ -244,6 +244,7 @@ Resources:
               - sts:GetCallerIdentity
               - ec2:DescribeImages
               - ec2:DescribeTags
+              - ec2:DeleteTags
               - ec2:DescribeSecurityGroups
               - logs:DescribeLogGroups
               - kms:CreateKey
