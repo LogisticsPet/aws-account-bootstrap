@@ -309,6 +309,7 @@ Resources:
               - iam:PassRole
               - iam:DetachRolePolicy
               - iam:ListInstanceProfilesForRole
+              - iam:RemoveRoleFromInstanceProfile
               - iam:DeleteRolePolicy
               - iam:DeleteRole
               - iam:UpdateAssumeRolePolicy
